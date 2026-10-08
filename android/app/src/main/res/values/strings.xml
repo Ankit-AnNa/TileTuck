@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TileTuck</string>
+    <string name="title_activity_main">TileTuck</string>
+    <string name="package_name">com.tiletuck.game</string>
+    <string name="custom_url_scheme">com.tiletuck.game</string>
+</resources>

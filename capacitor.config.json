@@ -1,0 +1,8 @@
+{
+  "appId": "com.tiletuck.game",
+  "appName": "TileTuck",
+  "webDir": "frontend",
+  "android": {
+    "allowMixedContent": true
+  }
+}

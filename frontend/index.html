@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#06251d">
+  <title>TileTuck</title>
+  <link rel="stylesheet" href="style.css?v=27">
+</head>
+<body>
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="TileTuck.png" alt="TileTuck">
+      </div>
+      <p class="auth-sub">Play. Solve. Race.</p>
+
+      <div class="auth-tabs" id="authTabs">
+        <button id="registerTab" class="auth-tab active" type="button">CREATE ACCOUNT</button>
+        <button id="loginTab" class="auth-tab" type="button">LOGIN</button>
+      </div>
+
+      <div class="avatar-preview" id="avatarPreview">👤</div>
+      <label class="upload-btn" id="photoLabel">
+        Choose Photo
+        <input id="photoInput" type="file" accept="image/*" hidden>
+      </label>
+
+      <div id="registerFields">
+        <input id="usernameInput" class="auth-input" placeholder="Username" maxlength="20" autocomplete="username">
+        <input id="emailInput" class="auth-input" type="email" placeholder="Email" autocomplete="email">
+        <input id="dobInput" class="auth-input" type="date">
+        <input id="passwordInput" class="auth-input" type="password" placeholder="Password" autocomplete="new-password">
+        <button id="startGameBtn" class="primary-btn" type="button">CREATE ACCOUNT &amp; PLAY</button>
+      </div>
+
+      <div id="loginFields" class="hidden">
+        <input id="loginEmailInput" class="auth-input" type="email" placeholder="Email" autocomplete="email">
+        <input id="loginPasswordInput" class="auth-input" type="password" placeholder="Password" autocomplete="current-password">
+        <button id="loginBtn" class="primary-btn" type="button">LOGIN &amp; PLAY</button>
+        <button id="forgotPasswordBtn" class="auth-link" type="button">Forgot password?</button>
+      </div>
+
+      <div id="passwordResetFields" class="hidden">
+        <p class="auth-note reset-copy">Choose a new password for your account.</p>
+        <input id="newPasswordInput" class="auth-input" type="password" placeholder="New password" autocomplete="new-password">
+        <input id="confirmPasswordInput" class="auth-input" type="password" placeholder="Confirm new password" autocomplete="new-password">
+        <button id="resetPasswordBtn" class="primary-btn" type="button">RESET PASSWORD</button>
+        <button id="backToLoginBtn" class="auth-link" type="button">Back to login</button>
+      </div>
+
+      <button id="guestBtn" class="guest-btn" type="button">▶ CONTINUE AS GUEST</button>
+      <p class="guest-note" id="guestNote">Guest progress is temporary. Create an account anytime to save progress and join the real leaderboard.</p>
+      <p id="authError" class="auth-error" role="status" aria-live="polite"></p>
+      <p class="auth-note" id="authNote">You can play without an account. Account is optional.</p>
+      <details class="server-settings">
+        <summary>Game server connection</summary>
+        <input id="serverUrlInput" class="auth-input" type="url" inputmode="url" placeholder="http://10.0.2.2:8000" aria-label="Game server URL">
+        <small>Emulator: 10.0.2.2 · Phone: use your computer's local network address.</small>
+        <button id="saveServerUrlBtn" class="auth-link" type="button">SAVE SERVER ADDRESS</button>
+      </details>
+    </div>
+  </div>
+
+  <section id="dashboard" class="trail-dashboard hidden" aria-label="Stage dashboard">
+    <header class="trail-topbar">
+      <img class="trail-logo" src="TileTuck.png" alt="TileTuck">
+      <div class="trail-user"><span id="dashboardAvatar">🌙</span><b id="dashboardUsername">Player</b></div>
+      <button id="dashboardLogoutBtn" class="trail-logout" type="button">LOG OUT</button>
+    </header>
+
+    <section class="moon-banner">
+      <div class="moon-disc" aria-hidden="true"><span>✦</span></div>
+      <div class="moon-copy">
+        <span class="trail-eyebrow">THE MIDNIGHT MAP</span>
+        <h1>Pick up your trail.</h1>
+        <p id="dashboardQuip">The owls have checked your homework. Mostly.</p>
+      </div>
+      <div class="trail-stats">
+        <span>BEST STAGE <b id="dashboardBestStage">1</b></span>
+        <span>BEST LEVEL <b id="dashboardBestLevel">1</b></span>
+        <span>BEST SCORE <b id="dashboardBestScore">0</b></span>
+      </div>
+    </section>
+
+    <div class="trail-progressline">
+      <span id="dashboardProgressLabel">Stage 1 · Level 1</span>
+      <span id="dashboardProgressCount">0 / 10 cleared</span>
+    </div>
+    <div class="trail-progress"><div id="dashboardProgressFill"></div></div>
+
+    <section class="trail-map-section">
+      <div class="trail-section-heading">
+        <div><span class="trail-eyebrow">YOUR JOURNEY</span><h2>Forest stages</h2></div>
+        <span class="map-hint">Cleared trails glow. The next trail is marked for you.</span>
+      </div>
+      <div id="stageRail" class="stage-rail" role="tablist" aria-label="Choose a stage"></div>
+    </section>
+
+    <div class="trail-columns">
+      <section class="level-map-panel">
+        <div class="trail-section-heading level-heading">
+          <div><span class="trail-eyebrow" id="selectedStageEyebrow">STAGE 1</span><h2 id="selectedStageTitle">Ten little puzzles</h2></div>
+          <button id="resumeLevelBtn" class="resume-trail-btn" type="button">CONTINUE TRAIL <span>→</span></button>
+        </div>
+        <div id="levelGrid" class="level-grid" aria-label="Stage levels"></div>
+        <p id="levelMapNote" class="map-note">The next open trail is waiting. The puzzles behind you are still proud.</p>
+      </section>
+
+      <aside class="stage-players-panel">
+        <div class="trail-section-heading players-heading">
+          <div><span class="trail-eyebrow">NIGHT WATCH</span><h2>Players here</h2></div>
+          <button id="refreshStagePlayers" class="refresh-players" type="button" title="Refresh players">↻</button>
+        </div>
+        <p id="playersCaption" class="players-caption">Players exploring Stage 1</p>
+        <div id="stagePlayers" class="stage-players" aria-live="polite"></div>
+      </aside>
+    </div>
+    <section class="leaderboard dashboard-leaderboard">
+      <div class="section-title"><span>🏆 LEADERBOARD</span><button id="leaderboardBtn" type="button">Refresh</button></div>
+      <div id="leaderboardList"></div>
+    </section>
+    <footer class="trail-footer"><span>🌲 Take your time. The forest is not going anywhere.</span><span id="dashboardSaveNote">Progress saved to your account.</span></footer>
+  </section>
+
+  <div class="game hidden" id="game">
+    <header class="topbar">
+      <div>
+        <img class="brand" src="TileTuck.png" alt="TileTuck">
+        <div class="level">STAGE <span id="stageNo">1</span> · LEVEL <span id="levelNo">1</span></div>
+      </div>
+      <div class="profile-mini" id="profileMini">
+        <span id="miniAvatar">👤</span><b id="miniName">Player</b>
+      </div>
+      <div class="stats">
+        <div class="pill">❤️ <b id="lives">5</b></div>
+        <div class="pill">⭐ <b id="score">0</b></div>
+      </div>
+      <button id="backToDashboard" class="back-to-trail" type="button" title="Back to stage map">MAP</button>
+    </header>
+
+    <section class="race-card">
+      <div class="race-head"><span>⏱ LEVEL TIMER</span><b id="raceTimer">00:00</b></div>
+      <div class="race-progress"><div id="raceFill"></div></div>
+      <div class="race-row"><span>Your progress: <b id="raceLevel">Level 1</b></span><span>Rank: <b id="raceRank">--</b></span></div>
+    </section>
+
+    <section class="tools">
+      <button class="tool" id="hammerBtn" type="button"><span>🔨</span><strong>Hammer</strong><em id="hammerCount">1</em></button>
+      <button class="tool" id="breakBtn" type="button"><span>💥</span><strong>Break</strong><em id="breakCount">1</em></button>
+      <button class="tool" id="hintBtn" type="button"><span>💡</span><strong>Hint</strong><em id="hintCount">1</em></button>
+    </section>
+
+    <section class="profile-panel hidden" id="profilePanel">
+      <div><b id="profileName">Player</b><small id="profileEmail"></small></div>
+      <div class="profile-data">
+        <span>🏁 Best Stage <b id="bestStage">1</b> · Level <b id="bestLevel">1</b></span>
+        <span>⭐ Best Score <b id="bestScore">0</b></span>
+      </div>
+      <button id="guestAccountBtn" class="guest-account-btn hidden" type="button">Create Account / Login</button>
+      <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+    </section>
+
+    <section class="progress-area">
+      <div class="progress-line"><span>BOARD</span><b id="progressText">0 / 9</b></div>
+      <div class="progress"><div id="progressFill"></div></div>
+    </section>
+
+    <main>
+      <div id="board" class="board"></div>
+      <div class="tip">Tap a piece → tap a board square to place • Rotate button or double-tap to rotate</div>
+
+      <h2>YOUR PIECES</h2>
+      <div id="pieces" class="pieces"></div>
+    </main>
+
+    <div id="tutorialOverlay" class="tutorial-overlay hidden">
+      <div class="tutorial-card">
+        <div class="tutorial-top">
+          <div>
+            <span class="tutorial-badge">🎮 NEW PLAYER GUIDE</span>
+            <h1>Welcome to TileTuck</h1>
+            <p>Fill the complete board with every piece. No empty square can remain.</p>
+          </div>
+          <button id="tutorialClose" class="tutorial-x" type="button">×</button>
+        </div>
+
+        <div class="tutorial-steps">
+          <div class="t-step active"><b>1</b><strong>Pick a piece</strong><span>Tap Select or hold and drag.</span></div>
+          <div class="t-step"><b>2</b><strong>Place it</strong><span>Tap or drop it inside the grid.</span></div>
+          <div class="t-step"><b>3</b><strong>Rotate</strong><span>Use Rotate or double-tap.</span></div>
+        </div>
+
+        <div class="demo-box">
+          <div class="demo-title">LIVE DEMO — Level 1 is 3×3</div>
+          <div class="demo-area">
+            <div class="demo-board" id="demoBoard">
+              <i class="dcell filled"></i><i class="dcell filled"></i><i class="dcell"></i>
+              <i class="dcell filled"></i><i class="dcell filled"></i><i class="dcell"></i>
+              <i class="dcell"></i><i class="dcell"></i><i class="dcell"></i>
+            </div>
+            <div class="demo-arrow">➜</div>
+            <div class="demo-pieces">
+              <span class="demo-piece lp"></span><span class="demo-piece line"></span><span class="demo-piece dot"></span>
+            </div>
+          </div>
+          <div class="demo-caption">Example: place pieces until <b>9 / 9</b> squares are filled.</div>
+        </div>
+
+        <div class="rules-grid">
+          <div>❤️ <b>5 Lives</b><small>Fail a puzzle and lose one.</small></div>
+          <div>🔨 <b>Hammer</b><small>Remove one placed block.</small></div>
+          <div>💥 <b>Break</b><small>Clear a group of blocks.</small></div>
+          <div>💡 <b>Hint</b><small>Shows a possible move.</small></div>
+          <div>🏁 <b>Race</b><small>Finish faster to rank higher.</small></div>
+          <div>💾 <b>Account</b><small>Save progress and scores.</small></div>
+        </div>
+
+        <div class="tutorial-note">Guest mode lets you play freely. <b>Guest progress is not saved.</b> Create an account whenever you want to keep your progress.</div>
+        <button id="startTutorialGame" class="tutorial-start" type="button">▶ START / CONTINUE LEVEL 1</button>
+        <button id="replayTutorial" class="tutorial-link" type="button">How to play again</button>
+      </div>
+    </div>
+
+    <button class="profile-toggle" id="profileToggle" type="button">👤 Profile</button>
+    <div id="toast" class="toast hidden"></div>
+
+    <div id="raceModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="win-icon">🏁</div><h1>RACE RESULT</h1>
+        <p id="raceResult"></p><button id="raceContinueBtn" type="button">CONTINUE</button>
+      </div>
+    </div>
+
+    <div id="winModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="win-icon">🏆</div>
+        <h1>LEVEL COMPLETE!</h1>
+        <p id="winInfo"></p>
+        <button id="nextBtn" type="button">NEXT LEVEL</button>
+      </div>
+    </div>
+
+    <div id="failModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="win-icon">❤️</div>
+        <h1>NO MOVES</h1>
+        <p>You lost one life. Your puzzle will restart.</p>
+        <button id="retryBtn" type="button">RETRY LEVEL</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js?v=34"></script>
+</body>
+</html>

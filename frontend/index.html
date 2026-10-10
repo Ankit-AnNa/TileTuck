@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#06251d">
   <title>TileTuck</title>
   <link rel="stylesheet" href="style.css?v=27">
+  <script src="config.js"></script>
 </head>
 <body>
   <div id="authScreen" class="auth-screen">
@@ -55,8 +56,8 @@
       <p class="auth-note" id="authNote">You can play without an account. Account is optional.</p>
       <details class="server-settings">
         <summary>Game server connection</summary>
-        <input id="serverUrlInput" class="auth-input" type="url" inputmode="url" placeholder="http://10.0.2.2:8000" aria-label="Game server URL">
-        <small>Emulator: 10.0.2.2 · Phone: use your computer's local network address.</small>
+        <input id="serverUrlInput" class="auth-input" type="url" inputmode="url" placeholder="https://your-render-backend-url.onrender.com" aria-label="Game server URL">
+        <small>Production: use your Render backend URL. Local dev: use http://localhost:8000 or your LAN IP.</small>
         <button id="saveServerUrlBtn" class="auth-link" type="button">SAVE SERVER ADDRESS</button>
       </details>
     </div>
